@@ -1,20 +1,8 @@
-# n8n-nodes-hallag
+# n8n-nodes-vcloud
 
-**SipWise**
+**VMware vCloud Director**
 
-[Homepage](https://www.sipwise.com/)
 
-**Odoo Rest API**
-
-[Homepage](https://www.odoo.com/)
-
-**Ocilion**
-
-[Homepage](https://ocilion.com/en)
-
-**EasyProvisioning**
-
-[Homepage](https://www.easysol.at/)
 
 ## License
 

@@ -1,28 +1,92 @@
 import {
+	IExecuteFunctions,
+} from 'n8n-core';
+
+import {
+	OptionsWithUri,
+} from 'request';
+
+import {
 	IDataObject,
-	INodeExecutionData,
+	ILoadOptionsFunctions,
+	NodeApiError,
+	NodeOperationError,
 } from 'n8n-workflow';
 
+import {
+	vCloudDirectorCredentials,
+} from './types';
+
+export async function vCloudDirectorApiRequest(
+	this: IExecuteFunctions | ILoadOptionsFunctions,
+	method: string,
+	endpoint: string,
+	body: IDataObject = {},
+	qs: IDataObject = {},
+	Token: string
+) {
+	const credentials = await this.getCredentials('vCloudDirector') as vCloudDirectorCredentials;
+	
+	const options: OptionsWithUri = {
+		headers: {
+			'Authorization': 'Bearer ' + Token,
+			'Accept': 'application/*+json;version=35.0',
+		},
+		method,
+		body,
+		qs,
+		uri: `${credentials.host}/api/${endpoint}`,
+		json: true,
+		gzip: true,
+		rejectUnauthorized: false,
+	};
+
+	if (Object.keys(qs).length === 0) {
+		delete options.qs;
+	} 
+
+	if (Object.keys(body).length === 0) {
+		delete options.body;
+	}
+	try {
+		return await this.helpers.request!(options);
+	} catch (error:any) {
+		throw new NodeApiError(this.getNode(), {error:error});
+	}
+}
+
+
 /**
- * Returns of copy of the items which only contains the json data and
- * of that only the define properties
- *
- * @param {INodeExecutionData[]} items The items to copy
- * @param {string[]} properties The properties it should include
- * @returns
+ * Get a Token based on vCloud Director account username and password.
  */
-export function copyInputItems(items: INodeExecutionData[], properties: string[]): IDataObject[] {
-	// Prepare the data to insert and copy it to be returned
-	let newItem: IDataObject;
-	return items.map((item) => {
-		newItem = {};
-		for (const property of properties) {
-			if (item.json[property] === undefined) {
-				newItem[property] = null;
-			} else {
-				newItem[property] = JSON.parse(JSON.stringify(item.json[property]));
-			}
-		}
-		return newItem;
-	});
+ export async function getToken(
+	this: IExecuteFunctions | ILoadOptionsFunctions,
+	{ username, password, host }: vCloudDirectorCredentials,
+) {
+	
+	var _include_headers = function(body, response, resolveWithFullResponse) {
+	  return {'headers': response.headers, 'data': body};
+	};
+
+	const options: OptionsWithUri = {
+		headers: {
+			'Accept': 'application/*+json;version=35.0',
+		},
+		method: 'POST',
+		uri: `${host}/api/sessions`,
+		json: true,
+		auth: {
+			username: ${username},
+			password: ${password},
+		},
+		rejectUnauthorized: false,
+		transform: _include_headers,
+	};
+	
+	try {
+		const token = await this.helpers.request!(options);
+		return token.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
+	} catch (error:any) {
+		throw new NodeApiError(this.getNode(), {error:error});
+	}
 }

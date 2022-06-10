@@ -1,349 +1,254 @@
+import { json } from 'express';
 import { IExecuteFunctions } from 'n8n-core';
-import {
-	IDataObject,
-	INodeExecutionData,
-	INodeType,
-	INodeTypeDescription,
-	NodeOperationError,
-} from 'n8n-workflow';
-// @ts-ignore
+import { IDataObject, INodeExecutionData, INodeParameters, INodeType, INodeTypeDescription } from 'n8n-workflow';
 
-import { copyInputItems } from './GenericFunctions';
+import { vCloudDirectorApiRequest, getToken } from './GenericFunctions';
+import { vCloudDirectorCredentials } from './types';
 
-export class vCloud implements INodeType {
+export class vCloudDirector implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'vCloud',
-		name: 'vCloud',
-		icon: 'file:vCloud.png',
-		group: ['input'],
+		displayName: 'VMware vCloud Director',
+		name: 'vCloudDirector',
+		icon: 'file:vcloud.png',
+		group: ['transform'],
 		version: 1,
-		description: 'Get, add and update data in vCloud',
+		description: 'VMware vCloud DirectorApi',
 		defaults: {
-			name: 'vCloud',
+			name: 'vCloudDirector',
+			color: '#772244',
 		},
 		inputs: ['main'],
 		outputs: ['main'],
 		credentials: [
 			{
-				name: 'vcloud',
+				name: 'vCloudDirector',
 				required: true,
 			},
 		],
 		properties: [
 			{
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				options: [
+					{
+						name: 'Organisation',
+						value: 'org',
+					},
+				],
+				default: 'org',
+				description: 'Resource to use',
+			},
+			{
 				displayName: 'Operation',
 				name: 'operation',
 				type: 'options',
-				noDataExpression: true,
 				options: [
 					{
-						name: 'Execute Query',
-						value: 'executeQuery',
-						description: 'Execute an SQL query',
+						name: 'Create',
+						value: 'create',
+						description: 'Create a record',
 					},
 					{
-						name: 'Insert',
-						value: 'insert',
-						description: 'Insert rows in database',
+						name: 'Get',
+						value: 'get',
+						description: 'Retrieve a record',
 					},
 					{
 						name: 'Update',
 						value: 'update',
-						description: 'Update rows in database',
+						description: 'Update a record',
+					},					
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a record',
 					},
 				],
-				default: 'insert',
+				default: 'get',
+				description: 'Operation to perform',
 			},
-
-			// ----------------------------------
-			//         executeQuery
-			// ----------------------------------
 			{
-				displayName: 'Query',
-				name: 'query',
+				displayName: 'Id',
+				name: 'id',
 				type: 'string',
+				displayOptions: {
+					show: {
+						operation:[
+							'get',
+							'delete',
+							'update',
+						],
+					},
+				},
+				default: '',
+				description: 'Id of Resource',
+			},
+			{
+				displayName: 'Values to Set',
+				name: 'values',
+				placeholder: 'Add Value',
+				type: 'fixedCollection',
 				typeOptions: {
-					alwaysOpenEditWindow: true,
+					multipleValues: true,
+					sortable: true,
 				},
-				displayOptions: {
-					show: {
-						operation: [
-							'executeQuery',
-						],
-					},
-				},
-				default: '',
-				placeholder: 'SELECT id, name FROM product WHERE id < 40',
-				required: true,
-				description: 'The SQL query to execute',
-			},
-
-
-			// ----------------------------------
-			//         insert
-			// ----------------------------------
-			{
-				displayName: 'Table',
-				name: 'table',
-				type: 'string',
-				displayOptions: {
-					show: {
-						operation: [
-							'insert',
-						],
-					},
-				},
-				default: '',
-				required: true,
-				description: 'Name of the table in which to insert data to',
-			},
-			{
-				displayName: 'Columns',
-				name: 'columns',
-				type: 'string',
-				displayOptions: {
-					show: {
-						operation: [
-							'insert',
-						],
-					},
-				},
-				default: '',
-				placeholder: 'id,name,description',
-				description: 'Comma-separated list of the properties which should used as columns for the new rows',
-			},
-			{
-				displayName: 'Options',
-				name: 'options',
-				type: 'collection',
-				displayOptions: {
-					show: {
-						operation: [
-							'insert',
-						],
-					},
-				},
+				description: 'The value to set.',
 				default: {},
-				placeholder: 'Add modifiers',
-				description: 'Modifiers for INSERT statement',
 				options: [
 					{
-						displayName: 'Ignore',
-						name: 'ignore',
-						type: 'boolean',
-						default: true,
-						description: 'Ignore any ignorable errors that occur while executing the INSERT statement',
-					},
-					{
-						displayName: 'Priority',
-						name: 'priority',
-						type: 'options',
-						options: [
+						name: 'attributes',
+						displayName: 'Attributes',
+						values: [
 							{
-								name: 'Low Prioirity',
-								value: 'LOW_PRIORITY',
-								description: 'Delays execution of the INSERT until no other clients are reading from the table',
+								displayName: 'Name',
+								name: 'name',
+								type: 'string',
+								default: '',
+								description: 'Name of value to set',
 							},
 							{
-								name: 'High Priority',
-								value: 'HIGH_PRIORITY',
-								description: 'Overrides the effect of the --low-priority-updates option if the server was started with that option. It also causes concurrent inserts not to be used.',
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'Value to set.',
 							},
 						],
-						default: 'LOW_PRIORITY',
-						description: 'Ignore any ignorable errors that occur while executing the INSERT statement',
 					},
 				],
-			},
-
-
-			// ----------------------------------
-			//         update
-			// ----------------------------------
-			{
-				displayName: 'Table',
-				name: 'table',
-				type: 'string',
 				displayOptions: {
 					show: {
-						operation: [
+						operation:[
+							'create',
 							'update',
 						],
 					},
 				},
-				default: '',
-				required: true,
-				description: 'Name of the table in which to update data in',
 			},
-			{
-				displayName: 'Update Key',
-				name: 'updateKey',
-				type: 'string',
-				displayOptions: {
-					show: {
-						operation: [
-							'update',
-						],
-					},
-				},
-				default: 'id',
-				required: true,
-				description: 'Name of the property which decides which rows in the database should be updated. Normally that would be "id".',
-			},
-			{
-				displayName: 'Columns',
-				name: 'columns',
-				type: 'string',
-				displayOptions: {
-					show: {
-						operation: [
-							'update',
-						],
-					},
-				},
-				default: '',
-				placeholder: 'name,description',
-				description: 'Comma-separated list of the properties which should used as columns for rows to update',
-			},
-
 		],
 	};
 
-
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const credentials = await this.getCredentials('mySql');
-
-		// Destructuring SSL configuration
-		const {
-			ssl,
-			caCertificate,
-			clientCertificate,
-			clientPrivateKey,
-			...baseCredentials
-		} = credentials;
-
-		if (ssl) {
-			baseCredentials.ssl = {};
-
-			if (caCertificate) {
-				baseCredentials.ssl.ca = caCertificate;
-			}
-
-			// client certificates might not be required
-			if (clientCertificate || clientPrivateKey) {
-				baseCredentials.ssl.cert = clientCertificate;
-				baseCredentials.ssl.key = clientPrivateKey;
-			}
-		}
-
-		const connection = await vClouddb.getConnection(baseCredentials);
 		const items = this.getInputData();
-		const operation = this.getNodeParameter('operation', 0) as string;
-		let returnItems = [];
+		const returnItems: INodeExecutionData[] = [];
+		
+		const resource = this.getNodeParameter('resource', 0, '') as string;
+		const operation = this.getNodeParameter('operation', 0, '') as string;
+		let item: INodeExecutionData;
 
-		if (operation === 'executeQuery') {
-			// ----------------------------------
-			//         executeQuery
-			// ----------------------------------
+		const credentials = await this.getCredentials('vCloudDirector') as vCloudDirectorCredentials;
+		const token = await getToken.call(this,credentials);
 
-			try {
-				const queryQueue = items.map((item, index) => {
-					const rawQuery = this.getNodeParameter('query', index) as string;
+		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 
-					return connection.execute(rawQuery);
-				});
+			try{
+				//--------------------------------------------------------
+				// 						Get
+				//--------------------------------------------------------
+				if(operation == 'get'){
+					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					
+					const endpoint = `${resource}/${id}`;
+					
+					item = items[itemIndex];
 
-				const queryResult = (await Promise.all(queryQueue) as mysql2.OkPacket[][]).reduce((collection, result) => {
-					const [rows, fields] = result;
+					const data = await vCloudDirectorApiRequest.call(this,'Get', endpoint, {}, {},token);
+					const datajson = data.data;
+					const newItem: INodeExecutionData = {
+						json: {},
+						binary: {},
+					};
+					newItem.json = datajson;
 
-					if (Array.isArray(rows)) {
-						return collection.concat(rows);
-					}
+					returnItems.push(newItem);
+						
+				}
 
-					collection.push(rows);
 
-					return collection;
-				}, []);
+				//--------------------------------------------------------
+				// 						Update
+				//--------------------------------------------------------
+				if(operation == 'update'){
+					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					const endpoint = `${resource}/${id}`;
+					const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []) as INodeParameters[];
+					item = items[itemIndex];
+					
+					
+					const attributes:IDataObject ={};
+					for (let attributesIndex = 0; attributesIndex < attributesInput.length; attributesIndex++) {
+						attributes[`${attributesInput[attributesIndex].name}`] = attributesInput[attributesIndex].value;
+					};
+					const toCreate:IDataObject ={};
+					toCreate.data ={
+						"type": resource,
+						attributes
+					};
+					
+					console.log(toCreate);
+					const newItem: INodeExecutionData = {
+						json: {},
+						binary: {},
+					};
+					newItem.json = await vCloudDirectorApiRequest.call(this,'Put', endpoint, toCreate, {},token);
+					returnItems.push(newItem);
+				}	
 
-				returnItems = this.helpers.returnJsonArray(queryResult as unknown as IDataObject[]);
+				//--------------------------------------------------------
+				// 						Create
+				//--------------------------------------------------------
+				if(operation == 'create'){
+					const endpoint = resource;
+					const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []) as INodeParameters[];
+					item = items[itemIndex];
+					
+					
+					const attributes:IDataObject ={};
+					for (let attributesIndex = 0; attributesIndex < attributesInput.length; attributesIndex++) {
+						attributes[`${attributesInput[attributesIndex].name}`] = attributesInput[attributesIndex].value;
+					};
+					const toCreate:IDataObject ={};
+					toCreate.data ={
+						"type": resource,
+						attributes
+					};
+					
+					console.log(toCreate);
+					const newItem: INodeExecutionData = {
+						json: {},
+						binary: {},
+					};
+					newItem.json = await vCloudDirectorApiRequest.call(this,'Post', endpoint, toCreate, {},token);
+					returnItems.push(newItem);
+				}		
 
-			} catch (error) {
+				//--------------------------------------------------------
+				// 						Delete
+				//--------------------------------------------------------
+				if(operation == 'delete'){
+					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					const endpoint = `${resource}/${id}`;
+
+					item = items[itemIndex];
+					const newItem: INodeExecutionData = {
+						json: {},
+						binary: {},
+					};
+					newItem.json = await vCloudDirectorApiRequest.call(this,'Delete', endpoint, {}, {},token);
+					
+					returnItems.push(newItem);
+				}
+				
+			} catch (error:any) {
 				if (this.continueOnFail()) {
-					returnItems = this.helpers.returnJsonArray({ error: error.message });
-				} else {
-					await connection.end();
-					throw error;
+					returnItems.push({json:{ error: error.message}});
+					continue;
 				}
-			}
-		} else if (operation === 'insert') {
-			// ----------------------------------
-			//         insert
-			// ----------------------------------
-
-			try {
-				const table = this.getNodeParameter('table', 0) as string;
-				const columnString = this.getNodeParameter('columns', 0) as string;
-				const columns = columnString.split(',').map(column => column.trim());
-				const insertItems = copyInputItems(items, columns);
-				const insertPlaceholder = `(${columns.map(column => '?').join(',')})`;
-				const options = this.getNodeParameter('options', 0) as IDataObject;
-				const insertIgnore = options.ignore as boolean;
-				const insertPriority = options.priority as string;
-
-				const insertSQL = `INSERT ${insertPriority || ''} ${insertIgnore ? 'IGNORE' : ''} INTO ${table}(${columnString}) VALUES ${items.map(item => insertPlaceholder).join(',')};`;
-				const queryItems = insertItems.reduce((collection, item) => collection.concat(Object.values(item as any)), []); // tslint:disable-line:no-any
-
-				const queryResult = await connection.execute(insertSQL, queryItems);
-
-				returnItems = this.helpers.returnJsonArray(queryResult[0] as unknown as IDataObject);
-			} catch (error) {
-				if (this.continueOnFail()) {
-					returnItems = this.helpers.returnJsonArray({ error: error.message });
-				} else {
-					await connection.end();
-					throw error;
-				}
+				throw error;
 			}
 
-		} else if (operation === 'update') {
-			// ----------------------------------
-			//         update
-			// ----------------------------------
-
-			try {
-				const table = this.getNodeParameter('table', 0) as string;
-				const updateKey = this.getNodeParameter('updateKey', 0) as string;
-				const columnString = this.getNodeParameter('columns', 0) as string;
-				const columns = columnString.split(',').map(column => column.trim());
-
-				if (!columns.includes(updateKey)) {
-					columns.unshift(updateKey);
-				}
-
-				const updateItems = copyInputItems(items, columns);
-				const updateSQL = `UPDATE ${table} SET ${columns.map(column => `${column} = ?`).join(',')} WHERE ${updateKey} = ?;`;
-				const queryQueue = updateItems.map((item) => connection.execute(updateSQL, Object.values(item).concat(item[updateKey])));
-				const queryResult = await Promise.all(queryQueue);
-				returnItems = this.helpers.returnJsonArray(queryResult.map(result => result[0]) as unknown as IDataObject[]);
-
-			} catch (error) {
-				if (this.continueOnFail()) {
-					returnItems = this.helpers.returnJsonArray({ error: error.message });
-				} else {
-					await connection.end();
-					throw error;
-				}
-			}
-		} else {
-			if (this.continueOnFail()) {
-				returnItems = this.helpers.returnJsonArray({ error: `The operation "${operation}" is not supported!` });
-			} else {
-				await connection.end();
-				throw new NodeOperationError(this.getNode(), `The operation "${operation}" is not supported!`);
-			}
 		}
-
-		await connection.end();
 
 		return this.prepareOutputData(returnItems);
 	}

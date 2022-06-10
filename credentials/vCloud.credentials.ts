@@ -1,108 +1,26 @@
-import {
-	ICredentialType,
-	INodeProperties,
-} from 'n8n-workflow';
+import { ICredentialType, NodePropertyTypes, INodeProperties } from 'n8n-workflow';
 
+export class vCloudDirector implements ICredentialType {
+	name = 'vCloudDirector';
 
-export class vCloud implements ICredentialType {
-	name = 'vcloud';
-	displayName = 'vCloud';
-	documentationUrl = 'vCloud';
+	displayName = 'VMware vCloud Director';
+
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Host',
 			name: 'host',
 			type: 'string',
-			default: 'localhost',
+			default: 'https://',
 		},
 		{
-			displayName: 'Database',
-			name: 'connectString',
+			displayName: 'Username',
+			name: 'username',
 			type: 'string',
-			default: 'vCloud',
-		},
-		{
-			displayName: 'User',
-			name: 'user',
-			type: 'string',
-			default: 'vCloud',
+			default: '',
 		},
 		{
 			displayName: 'Password',
 			name: 'password',
-			type: 'string',
-			typeOptions: {
-				password: true,
-			},
-			default: '',
-		},
-		{
-			displayName: 'Port',
-			name: 'port',
-			type: 'number',
-			default: 3306,
-		},
-		{
-			displayName: 'Connect Timeout',
-			name: 'connectTimeout',
-			type: 'number',
-			default: 10000,
-			description: 'The milliseconds before a timeout occurs during the initial connection to the vCloud server',
-		},
-		{
-			displayName: 'SSL',
-			name: 'ssl',
-			type: 'boolean',
-			default: false,
-		},
-		{
-			displayName: 'CA Certificate',
-			name: 'caCertificate',
-			typeOptions: {
-				alwaysOpenEditWindow: true,
-				password: true,
-			},
-			displayOptions: {
-				show: {
-					ssl: [
-						true,
-					],
-				},
-			},
-			type: 'string',
-			default: '',
-		},
-		{
-			displayName: 'Client Private Key',
-			name: 'clientPrivateKey',
-			typeOptions: {
-				alwaysOpenEditWindow: true,
-				password: true,
-			},
-			displayOptions: {
-				show: {
-					ssl: [
-						true,
-					],
-				},
-			},
-			type: 'string',
-			default: '',
-		},
-		{
-			displayName: 'Client Certificate',
-			name: 'clientCertificate',
-			typeOptions: {
-				alwaysOpenEditWindow: true,
-				password: true,
-			},
-			displayOptions: {
-				show: {
-					ssl: [
-						true,
-					],
-				},
-			},
 			type: 'string',
 			default: '',
 		},

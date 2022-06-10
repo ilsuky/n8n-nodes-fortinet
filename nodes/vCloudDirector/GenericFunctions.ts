@@ -64,23 +64,25 @@ export async function vCloudDirectorApiRequest(
 	{ username, password, host }: vCloudDirectorCredentials,
 ) {
 
-	const options: OptionsWithUri = {
+	const options = {
 		headers: {
-			'Accept': 'application/*+json;version=35.0',
+			'Accept': 'application/*+json;version=35.0'
 		},
 		method: 'POST',
-		uri: `${host}/api/sessions`,
+		url: `${host}/api/sessions`,
 		json: true,
 		auth: {
 			username: `${username}`,
-			password: `${password}`
+			password: `${password}`,
 		},
-		rejectUnauthorized: false
+		rejectUnauthorized: false,
+		returnFullResponse: true,
 	};
+	
 	
 	try {
 		const token = await this.helpers.request!(options);
-		return token.response.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
+		return token.headers.get('X-VMWARE-VCLOUD-ACCESS-TOKEN');
 	} catch (error:any) {
 		throw new NodeApiError(this.getNode(), {error:error});
 	}

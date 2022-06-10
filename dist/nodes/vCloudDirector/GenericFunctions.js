@@ -32,23 +32,26 @@ async function vCloudDirectorApiRequest(method, endpoint, body = {}, qs = {}, To
 }
 exports.vCloudDirectorApiRequest = vCloudDirectorApiRequest;
 async function getToken({ username, password, host }) {
+    const credentials = await this.getCredentials('vCloudDirector');
     const options = {
         headers: {
             'Accept': 'application/*+json;version=35.0'
         },
         method: 'POST',
-        uri: `${host}/api/sessions`,
+        uri: `${credentials.host}/api/sessions`,
         json: true,
         auth: {
-            username: `${username}`,
-            password: `${password}`
+            username: `${credentials.username}`,
+            password: `${credentials.password}`
         },
         resolveWithFullResponse: true,
     };
+    console.log(options);
     try {
-        const token = await this.helpers.request(options);
-        const tokenheader = token.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
-        return tokenheader;
+        const cookie = await this.helpers.request(options);
+        console.log(cookie);
+        const cookieheader = cookie.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
+        return cookieheader;
     }
     catch (error) {
         throw new n8n_workflow_1.NodeApiError(this.getNode(), { error: error });

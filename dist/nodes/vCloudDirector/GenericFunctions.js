@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getToken = exports.vCloudDirectorApiRequest = void 0;
+exports.getxToken = exports.vCloudDirectorApiRequest = void 0;
 const n8n_workflow_1 = require("n8n-workflow");
 async function vCloudDirectorApiRequest(method, endpoint, body = {}, qs = {}, Token) {
     const credentials = await this.getCredentials('vCloudDirector');
@@ -17,6 +17,7 @@ async function vCloudDirectorApiRequest(method, endpoint, body = {}, qs = {}, To
         gzip: true,
         rejectUnauthorized: false,
     };
+    console.log(options);
     if (Object.keys(qs).length === 0) {
         delete options.qs;
     }
@@ -31,7 +32,7 @@ async function vCloudDirectorApiRequest(method, endpoint, body = {}, qs = {}, To
     }
 }
 exports.vCloudDirectorApiRequest = vCloudDirectorApiRequest;
-async function getToken({ username, password, host }) {
+async function getxToken({ username, password, host }) {
     const credentials = await this.getCredentials('vCloudDirector');
     const options = {
         headers: {
@@ -46,16 +47,14 @@ async function getToken({ username, password, host }) {
         },
         resolveWithFullResponse: true,
     };
-    console.log(options);
     try {
         const cookie = await this.helpers.request(options);
-        console.log(cookie);
-        const cookieheader = cookie.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
+        const cookieheader = cookie.headers['x-vmware-vcloud-access-token'];
         return cookieheader;
     }
     catch (error) {
         throw new n8n_workflow_1.NodeApiError(this.getNode(), { error: error });
     }
 }
-exports.getToken = getToken;
+exports.getxToken = getxToken;
 //# sourceMappingURL=GenericFunctions.js.map

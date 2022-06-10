@@ -41,6 +41,8 @@ export async function vCloudDirectorApiRequest(
 		rejectUnauthorized: false,
 	};
 
+	console.log(options);
+
 	if (Object.keys(qs).length === 0) {
 		delete options.qs;
 	} 
@@ -59,7 +61,7 @@ export async function vCloudDirectorApiRequest(
 /**
  * Get a Token based on vCloud Director account username and password.
  */
- export async function getToken(
+ export async function getxToken(
 	this: IExecuteFunctions | ILoadOptionsFunctions,
 	{ username, password, host }: vCloudDirectorCredentials,
 ) {
@@ -80,12 +82,9 @@ export async function vCloudDirectorApiRequest(
 		resolveWithFullResponse: true,		
 	};
 	
-	console.log(options);
-
 	try {
 		const cookie = await this.helpers.request!(options);
-		console.log(cookie);
-		const cookieheader = cookie.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
+		const cookieheader = cookie.headers['x-vmware-vcloud-access-token'];
 		return cookieheader;
 	} catch (error:any) {
 		throw new NodeApiError(this.getNode(), {error:error});

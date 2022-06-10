@@ -2,7 +2,7 @@ import { json } from 'express';
 import { IExecuteFunctions } from 'n8n-core';
 import { IDataObject, INodeExecutionData, INodeParameters, INodeType, INodeTypeDescription } from 'n8n-workflow';
 
-import { vCloudDirectorApiRequest, getToken } from './GenericFunctions';
+import { vCloudDirectorApiRequest, getxToken } from './GenericFunctions';
 import { vCloudDirectorCredentials } from './types';
 
 export class vCloudDirector implements INodeType {
@@ -138,7 +138,7 @@ export class vCloudDirector implements INodeType {
 		let item: INodeExecutionData;
 
 		const credentials = await this.getCredentials('vCloudDirector') as vCloudDirectorCredentials;
-		const token = await getToken.call(this,credentials);
+		const token = await getxToken.call(this,credentials);
 		
 		console.log(token);
 

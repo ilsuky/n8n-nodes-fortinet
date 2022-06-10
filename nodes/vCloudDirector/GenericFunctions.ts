@@ -74,16 +74,16 @@ export async function vCloudDirectorApiRequest(
 		auth: {
 			username: `${username}`,
 			password: `${password}`
-		}
+		},
+		//@ts-ignore
+		resolveWithFullResponse: true,		
 	};
 	
 
 	try {
 		const token = await this.helpers.request!(options);
-		var result = token.json();
-		console.log(result);
-		console.log(token.headers.get('X-Token'));
-		return token.headers.get('X-VMWARE-VCLOUD-ACCESS-TOKEN');
+		const tokenheader = token.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
+		return tokenheader;
 	} catch (error:any) {
 		throw new NodeApiError(this.getNode(), {error:error});
 	}

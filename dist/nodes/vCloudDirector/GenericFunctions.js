@@ -42,14 +42,13 @@ async function getToken({ username, password, host }) {
         auth: {
             username: `${username}`,
             password: `${password}`
-        }
+        },
+        resolveWithFullResponse: true,
     };
     try {
         const token = await this.helpers.request(options);
-        var result = token.json();
-        console.log(result);
-        console.log(token.headers.get('X-Token'));
-        return token.headers.get('X-VMWARE-VCLOUD-ACCESS-TOKEN');
+        const tokenheader = token.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
+        return tokenheader;
     }
     catch (error) {
         throw new n8n_workflow_1.NodeApiError(this.getNode(), { error: error });

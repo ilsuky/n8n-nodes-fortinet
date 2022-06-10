@@ -26,10 +26,10 @@
   ],
   "n8n": {
     "credentials": [
-      "dist/credentials/vCloud.credentials.js"
+      "dist/credentials/vCloudDirector.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/vCloud/vCloud.node.js"
+      "dist/nodes/vCloudDirector/vCloudDirector.node.js"
     ]
   },
   "devDependencies": {

@@ -63,10 +63,6 @@ export async function vCloudDirectorApiRequest(
 	this: IExecuteFunctions | ILoadOptionsFunctions,
 	{ username, password, host }: vCloudDirectorCredentials,
 ) {
-	
-	var _include_headers = function(body, response, resolveWithFullResponse) {
-	  return {'headers': response.headers, 'data': body};
-	};
 
 	const options: OptionsWithUri = {
 		headers: {
@@ -76,16 +72,15 @@ export async function vCloudDirectorApiRequest(
 		uri: `${host}/api/sessions`,
 		json: true,
 		auth: {
-			username: ${username},
-			password: ${password},
+			username: `${username}`,
+			password: `${password}`
 		},
-		rejectUnauthorized: false,
-		transform: _include_headers,
+		rejectUnauthorized: false
 	};
 	
 	try {
 		const token = await this.helpers.request!(options);
-		return token.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
+		return token.response.headers['X-VMWARE-VCLOUD-ACCESS-TOKEN'];
 	} catch (error:any) {
 		throw new NodeApiError(this.getNode(), {error:error});
 	}

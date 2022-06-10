@@ -37,7 +37,7 @@ async function getToken({ username, password, host }) {
             'Accept': 'application/*+json;version=35.0'
         },
         method: 'POST',
-        url: `${host}/api/sessions`,
+        uri: `${host}/api/sessions`,
         json: true,
         auth: {
             username: `${username}`,

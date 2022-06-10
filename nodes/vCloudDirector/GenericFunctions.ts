@@ -69,7 +69,7 @@ export async function vCloudDirectorApiRequest(
 			'Accept': 'application/*+json;version=35.0'
 		},
 		method: 'POST',
-		url: `${host}/api/sessions`,
+		uri: `${host}/api/sessions`,
 		json: true,
 		auth: {
 			username: `${username}`,
@@ -79,7 +79,7 @@ export async function vCloudDirectorApiRequest(
 		returnFullResponse: true,
 	};
 	
-	
+
 	try {
 		const token = await this.helpers.request!(options);
 		return token.headers.get('X-VMWARE-VCLOUD-ACCESS-TOKEN');

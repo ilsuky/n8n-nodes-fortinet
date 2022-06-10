@@ -46,6 +46,9 @@ async function getToken({ username, password, host }) {
     };
     try {
         const token = await this.helpers.request(options);
+        var result = token.json();
+        console.log(result);
+        console.log(token.headers.get('X-Token'));
         return token.headers.get('X-VMWARE-VCLOUD-ACCESS-TOKEN');
     }
     catch (error) {

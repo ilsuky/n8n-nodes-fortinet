@@ -64,7 +64,7 @@ export async function vCloudDirectorApiRequest(
 	{ username, password, host }: vCloudDirectorCredentials,
 ) {
 
-	const options = {
+	const options: OptionsWithUri = {
 		headers: {
 			'Accept': 'application/*+json;version=35.0'
 		},
@@ -73,10 +73,8 @@ export async function vCloudDirectorApiRequest(
 		json: true,
 		auth: {
 			username: `${username}`,
-			password: `${password}`,
-		},
-		rejectUnauthorized: false,
-		returnFullResponse: true,
+			password: `${password}`
+		}
 	};
 	
 

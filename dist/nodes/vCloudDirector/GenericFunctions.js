@@ -41,10 +41,8 @@ async function getToken({ username, password, host }) {
         json: true,
         auth: {
             username: `${username}`,
-            password: `${password}`,
-        },
-        rejectUnauthorized: false,
-        returnFullResponse: true,
+            password: `${password}`
+        }
     };
     try {
         const token = await this.helpers.request(options);

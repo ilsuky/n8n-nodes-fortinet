@@ -41,8 +41,6 @@ export async function vCloudDirectorApiRequest(
 		rejectUnauthorized: false,
 	};
 
-	console.log(options);
-
 	if (Object.keys(qs).length === 0) {
 		delete options.qs;
 	} 
@@ -51,7 +49,9 @@ export async function vCloudDirectorApiRequest(
 		delete options.body;
 	}
 	try {
-		return await this.helpers.request!(options);
+		const resp = await this.helpers.request!(options);
+		console.log(resp);
+		return resp;
 	} catch (error:any) {
 		throw new NodeApiError(this.getNode(), {error:error});
 	}

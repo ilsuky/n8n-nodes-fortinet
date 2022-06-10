@@ -140,8 +140,6 @@ export class vCloudDirector implements INodeType {
 		const credentials = await this.getCredentials('vCloudDirector') as vCloudDirectorCredentials;
 		const token = await getxToken.call(this,credentials);
 		
-		console.log(token);
-
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 
 			try{
@@ -154,17 +152,12 @@ export class vCloudDirector implements INodeType {
 					const endpoint = `${resource}/${id}`;
 					
 					item = items[itemIndex];
-
-					const data = await vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
-					const datajson = data.data;
 					const newItem: INodeExecutionData = {
 						json: {},
 						binary: {},
 					};
-					newItem.json = datajson;
-
+					newItem.json = await vCloudDirectorApiRequest.call(this,'Get', endpoint, {}, {},token);
 					returnItems.push(newItem);
-						
 				}
 
 

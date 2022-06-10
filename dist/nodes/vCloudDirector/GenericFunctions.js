@@ -17,7 +17,6 @@ async function vCloudDirectorApiRequest(method, endpoint, body = {}, qs = {}, To
         gzip: true,
         rejectUnauthorized: false,
     };
-    console.log(options);
     if (Object.keys(qs).length === 0) {
         delete options.qs;
     }
@@ -25,7 +24,9 @@ async function vCloudDirectorApiRequest(method, endpoint, body = {}, qs = {}, To
         delete options.body;
     }
     try {
-        return await this.helpers.request(options);
+        const resp = await this.helpers.request(options);
+        console.log(resp);
+        return resp;
     }
     catch (error) {
         throw new n8n_workflow_1.NodeApiError(this.getNode(), { error: error });

@@ -135,20 +135,17 @@ class vCloudDirector {
         let item;
         const credentials = await this.getCredentials('vCloudDirector');
         const token = await GenericFunctions_1.getxToken.call(this, credentials);
-        console.log(token);
         for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
             try {
                 if (operation == 'get') {
                     const id = this.getNodeParameter('id', itemIndex, '');
                     const endpoint = `${resource}/${id}`;
                     item = items[itemIndex];
-                    const data = await GenericFunctions_1.vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
-                    const datajson = data.data;
                     const newItem = {
                         json: {},
                         binary: {},
                     };
-                    newItem.json = datajson;
+                    newItem.json = await GenericFunctions_1.vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
                     returnItems.push(newItem);
                 }
                 if (operation == 'update') {

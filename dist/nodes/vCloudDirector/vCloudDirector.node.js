@@ -135,6 +135,7 @@ class vCloudDirector {
         let item;
         const credentials = await this.getCredentials('vCloudDirector');
         const token = await GenericFunctions_1.getToken.call(this, credentials);
+        console.log(token);
         for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
             try {
                 if (operation == 'get') {

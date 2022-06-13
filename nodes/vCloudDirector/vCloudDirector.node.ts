@@ -265,16 +265,16 @@ export class vCloudDirector implements INodeType {
 					let endpoint = '';
 					
 					if(accesstype == 'admin'){
-						let resource = this.getNodeParameter('resource_admin', 0, '') as string;
-						let endpoint = 'admin/' + resource + '/' + id + '/metadata';
+						const resource = this.getNodeParameter('resource_admin', 0, '') as string;
+						const endpoint = 'admin/' + resource + '/' + id + '/metadata';
 					}
 					else if(accesstype == 'extension'){
-						let resource = this.getNodeParameter('resource_extension', 0, '') as string;
-						let endpoint = 'admin/extension/' + resource + '/' + id +'/metadata';
+						const resource = this.getNodeParameter('resource_extension', 0, '') as string;
+						const endpoint = 'admin/extension/' + resource + '/' + id +'/metadata';
 					}
 					else if(accesstype == 'user'){
-						let resource = this.getNodeParameter('resource_user', 0, '') as string;
-						let endpoint = resource + '/' + id + '/metadata';
+						const resource = this.getNodeParameter('resource_user', 0, '') as string;
+						const endpoint = resource + '/' + id + '/metadata';
 					}
 					
 					console.log(endpoint);

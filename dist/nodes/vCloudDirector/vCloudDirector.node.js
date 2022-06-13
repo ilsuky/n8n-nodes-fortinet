@@ -256,16 +256,16 @@ class vCloudDirector {
                     let resource = '';
                     let endpoint = '';
                     if (accesstype == 'admin') {
-                        let resource = this.getNodeParameter('resource_admin', 0, '');
-                        let endpoint = 'admin/' + resource + '/' + id + '/metadata';
+                        const resource = this.getNodeParameter('resource_admin', 0, '');
+                        const endpoint = 'admin/' + resource + '/' + id + '/metadata';
                     }
                     else if (accesstype == 'extension') {
-                        let resource = this.getNodeParameter('resource_extension', 0, '');
-                        let endpoint = 'admin/extension/' + resource + '/' + id + '/metadata';
+                        const resource = this.getNodeParameter('resource_extension', 0, '');
+                        const endpoint = 'admin/extension/' + resource + '/' + id + '/metadata';
                     }
                     else if (accesstype == 'user') {
-                        let resource = this.getNodeParameter('resource_user', 0, '');
-                        let endpoint = resource + '/' + id + '/metadata';
+                        const resource = this.getNodeParameter('resource_user', 0, '');
+                        const endpoint = resource + '/' + id + '/metadata';
                     }
                     console.log(endpoint);
                     item = items[itemIndex];

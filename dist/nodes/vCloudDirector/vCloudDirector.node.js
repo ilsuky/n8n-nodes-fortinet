@@ -255,7 +255,7 @@ class vCloudDirector {
                     const id = this.getNodeParameter('id', itemIndex, '');
                     if (accesstype == 'admin') {
                         const resource = this.getNodeParameter('resource_admin', 0, '');
-                        const endpoint = 'admin/' + resource + '/' + id + '/metadata';
+                        const endpoint = 'admin/' + resource + '/' + id + '';
                         console.log(endpoint);
                         item = items[itemIndex];
                         const newItem = {
@@ -267,7 +267,7 @@ class vCloudDirector {
                     }
                     else if (accesstype == 'extension') {
                         const resource = this.getNodeParameter('resource_extension', 0, '');
-                        const endpoint = 'admin/extension/' + resource + '/' + id + '/metadata';
+                        const endpoint = 'admin/extension/' + resource + '/' + id + '';
                         console.log(endpoint);
                         item = items[itemIndex];
                         const newItem = {
@@ -279,7 +279,7 @@ class vCloudDirector {
                     }
                     else if (accesstype == 'user') {
                         const resource = this.getNodeParameter('resource_user', 0, '');
-                        const endpoint = resource + '/' + id + '/metadata';
+                        const endpoint = resource + '/' + id + '';
                         console.log(endpoint);
                         item = items[itemIndex];
                         const newItem = {

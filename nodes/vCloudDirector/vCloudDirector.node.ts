@@ -264,7 +264,7 @@ export class vCloudDirector implements INodeType {
 					
 					if(accesstype == 'admin'){
 						const resource = this.getNodeParameter('resource_admin', 0, '') as string;
-						const endpoint = 'admin/' + resource + '/' + id + '/metadata';
+						const endpoint = 'admin/' + resource + '/' + id + '';
 						
 						console.log(endpoint);
 					
@@ -279,7 +279,7 @@ export class vCloudDirector implements INodeType {
 						
 					} else if(accesstype == 'extension'){
 						const resource = this.getNodeParameter('resource_extension', 0, '') as string;
-						const endpoint = 'admin/extension/' + resource + '/' + id +'/metadata';
+						const endpoint = 'admin/extension/' + resource + '/' + id +'';
 						
 						console.log(endpoint);
 					
@@ -294,7 +294,7 @@ export class vCloudDirector implements INodeType {
 						
 					} else if(accesstype == 'user'){
 						const resource = this.getNodeParameter('resource_user', 0, '') as string;
-						const endpoint = resource + '/' + id + '/metadata';
+						const endpoint = resource + '/' + id + '';
 						
 						console.log(endpoint);
 					

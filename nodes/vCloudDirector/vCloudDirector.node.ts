@@ -247,7 +247,6 @@ export class vCloudDirector implements INodeType {
 		const items = this.getInputData();
 		const returnItems: INodeExecutionData[] = [];
 		
-		const resource = this.getNodeParameter('resource', 0, '') as string;
 		const operation = this.getNodeParameter('operation', 0, '') as string;
 		let item: INodeExecutionData;
 
@@ -263,23 +262,30 @@ export class vCloudDirector implements INodeType {
 				if(operation == 'get'){
 					const id = this.getNodeParameter('id', itemIndex, '') as string;
 					const accesstype = this.getNodeParameter('accesstype', itemIndex, '') as string;
+					let resource = '';
 					let endpoint = '';
 					
 					if(accesstype == 'admin'){
+						let resource = this.getNodeParameter('resource_admin', 0, '') as string;
 						let endpoint = `admin/${resource}/${id}/metadata`;
 					}
 					else if(accesstype == 'extension'){
+						let resource = this.getNodeParameter('resource_extension', 0, '') as string;
 						let endpoint = `admin/extension/${resource}/${id}/metadata`;
 					}
 					else if(accesstype == 'user'){
+						let resource = this.getNodeParameter('resource_user', 0, '') as string;
 						let endpoint = `${resource}/${id}/metadata`;
 					}
+					
+					console.log(endpoint);
 					
 					item = items[itemIndex];
 					const newItem: INodeExecutionData = {
 						json: {},
 						binary: {},
 					};
+					
 					newItem.json = await vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
 					returnItems.push(newItem);
 				}
@@ -290,6 +296,7 @@ export class vCloudDirector implements INodeType {
 				//--------------------------------------------------------
 				if(operation == 'update'){
 					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					const resource = this.getNodeParameter('resource', 0, '') as string;
 					const endpoint = `${resource}/${id}`;
 					const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []) as INodeParameters[];
 					item = items[itemIndex];
@@ -318,6 +325,7 @@ export class vCloudDirector implements INodeType {
 				// 						Create
 				//--------------------------------------------------------
 				if(operation == 'create'){
+					const resource = this.getNodeParameter('resource', 0, '') as string;
 					const endpoint = resource;
 					const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []) as INodeParameters[];
 					item = items[itemIndex];
@@ -347,6 +355,7 @@ export class vCloudDirector implements INodeType {
 				//--------------------------------------------------------
 				if(operation == 'delete'){
 					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					const resource = this.getNodeParameter('resource', 0, '') as string;
 					const endpoint = `${resource}/${id}`;
 
 					item = items[itemIndex];

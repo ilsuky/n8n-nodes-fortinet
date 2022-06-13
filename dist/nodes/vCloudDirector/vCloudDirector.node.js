@@ -244,7 +244,6 @@ class vCloudDirector {
     async execute() {
         const items = this.getInputData();
         const returnItems = [];
-        const resource = this.getNodeParameter('resource', 0, '');
         const operation = this.getNodeParameter('operation', 0, '');
         let item;
         const credentials = await this.getCredentials('vCloudDirector');
@@ -254,16 +253,21 @@ class vCloudDirector {
                 if (operation == 'get') {
                     const id = this.getNodeParameter('id', itemIndex, '');
                     const accesstype = this.getNodeParameter('accesstype', itemIndex, '');
+                    let resource = '';
                     let endpoint = '';
                     if (accesstype == 'admin') {
+                        let resource = this.getNodeParameter('resource_admin', 0, '');
                         let endpoint = `admin/${resource}/${id}/metadata`;
                     }
                     else if (accesstype == 'extension') {
+                        let resource = this.getNodeParameter('resource_extension', 0, '');
                         let endpoint = `admin/extension/${resource}/${id}/metadata`;
                     }
                     else if (accesstype == 'user') {
+                        let resource = this.getNodeParameter('resource_user', 0, '');
                         let endpoint = `${resource}/${id}/metadata`;
                     }
+                    console.log(endpoint);
                     item = items[itemIndex];
                     const newItem = {
                         json: {},
@@ -274,6 +278,7 @@ class vCloudDirector {
                 }
                 if (operation == 'update') {
                     const id = this.getNodeParameter('id', itemIndex, '');
+                    const resource = this.getNodeParameter('resource', 0, '');
                     const endpoint = `${resource}/${id}`;
                     const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []);
                     item = items[itemIndex];
@@ -296,6 +301,7 @@ class vCloudDirector {
                     returnItems.push(newItem);
                 }
                 if (operation == 'create') {
+                    const resource = this.getNodeParameter('resource', 0, '');
                     const endpoint = resource;
                     const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []);
                     item = items[itemIndex];
@@ -319,6 +325,7 @@ class vCloudDirector {
                 }
                 if (operation == 'delete') {
                     const id = this.getNodeParameter('id', itemIndex, '');
+                    const resource = this.getNodeParameter('resource', 0, '');
                     const endpoint = `${resource}/${id}`;
                     item = items[itemIndex];
                     const newItem = {

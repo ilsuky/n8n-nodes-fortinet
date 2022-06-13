@@ -246,7 +246,7 @@ export class vCloudDirector implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnItems: INodeExecutionData[] = [];
-		
+		const accesstype = this.getNodeParameter('accesstype', 0, '') as string;
 		const operation = this.getNodeParameter('operation', 0, '') as string;
 		let item: INodeExecutionData;
 
@@ -261,7 +261,6 @@ export class vCloudDirector implements INodeType {
 				//--------------------------------------------------------
 				if(operation == 'get'){
 					const id = this.getNodeParameter('id', itemIndex, '') as string;
-					const accesstype = this.getNodeParameter('accesstype', itemIndex, '') as string;
 					let resource = '';
 					let endpoint = '';
 					

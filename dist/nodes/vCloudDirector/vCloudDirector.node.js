@@ -244,6 +244,7 @@ class vCloudDirector {
     async execute() {
         const items = this.getInputData();
         const returnItems = [];
+        const accesstype = this.getNodeParameter('accesstype', 0, '');
         const operation = this.getNodeParameter('operation', 0, '');
         let item;
         const credentials = await this.getCredentials('vCloudDirector');
@@ -252,7 +253,6 @@ class vCloudDirector {
             try {
                 if (operation == 'get') {
                     const id = this.getNodeParameter('id', itemIndex, '');
-                    const accesstype = this.getNodeParameter('accesstype', itemIndex, '');
                     let resource = '';
                     let endpoint = '';
                     if (accesstype == 'admin') {

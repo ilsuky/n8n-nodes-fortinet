@@ -27,17 +27,131 @@ export class vCloudDirector implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Resource',
-				name: 'resource',
+				displayName: 'AccessType',
+				name: 'accesstype',
+				type: 'options',
+				options: [
+					{
+						name: 'ADMIN',
+						value: 'admin',
+						description: 'These operations and queries are accessible to organization administrators or system administrators.',
+					},
+					{
+						name: 'EXTENSION',
+						value: 'extension',
+						description: 'These operations and queries are accessible to all users who have permission to log into an organization.',
+					},						
+					{
+						name: 'USER',
+						value: 'user',
+						description: 'These operations and queries are accessible to all users who have permission to log into an organization.',
+					},					
+				],
+				default: 'ADMIN',
+				description: 'AccessType to use',
+			},		
+			{
+				displayName: 'Resources ADMIN',
+				name: 'resource_admin',
+				type: 'options',
+				options: [
+					{
+						name: 'Catalog',
+						value: 'catalog',
+						description: 'catalog ADMIN Operation',
+					},						
+					{
+						name: 'edgeGateway',
+						value: 'edgegateway',
+						description: 'edgegateway ADMIN Operation',
+					},
+					{
+						name: 'Group',
+						value: 'group',
+						description: 'group ADMIN Operation',
+					},
+					{
+						name: 'Network',
+						value: 'network',
+						description: 'network ADMIN Operation',
+					},				
+					{
+						name: 'Organisation',
+						value: 'org',
+						description: 'org ADMIN Operation',
+					},
+					{
+						name: 'Organization vDC',
+						value: 'vdc',
+						description: 'vdc ADMIN Operation',
+					},
+					{
+						name: 'provider vDC',
+						value: 'providervdc',
+						description: 'providervdc ADMIN Operation',
+					},
+					{
+						name: 'vDC storage profile',
+						value: 'vdcStorageProfile',
+						description: 'vdcStorageProfile ADMIN Operation',
+					},
+					{
+						name: 'Provider VDC Storage',
+						value: 'pvdcStorageProfile',
+						description: 'pvdcstorageprofile ADMIN Operation',
+					},
+				],
+				default: 'org',
+				description: 'Resource to use',
+				displayOptions: {
+					show: {
+						accesstype:[
+							'admin',
+						],
+					},
+				},				
+			},
+			{
+				displayName: 'Resources USER',
+				name: 'resource_user',
 				type: 'options',
 				options: [
 					{
 						name: 'Organisation',
 						value: 'org',
+						description: 'User Operation',
 					},
 				],
 				default: 'org',
-				description: 'Resource to use',
+				description: 'USER Resource to use',
+				displayOptions: {
+					show: {
+						accesstype:[
+							'user',
+						],
+					},
+				},				
+			},
+			{
+				displayName: 'Resources EXTENSION',
+				name: 'resource_extension',
+				type: 'options',
+				options: [
+					{
+						name: 'Organisation',
+						value: 'org',
+						description: 'EXTENSION Operation',
+					},
+				],
+				default: 'org',
+				description: 'EXTENSION Resource to use',
+				displayOptions: {
+					show: {
+						accesstype:[
+							'extension',
+						],
+					},
+				},				
 			},
 			{
 				displayName: 'Operation',
@@ -148,15 +262,25 @@ export class vCloudDirector implements INodeType {
 				//--------------------------------------------------------
 				if(operation == 'get'){
 					const id = this.getNodeParameter('id', itemIndex, '') as string;
+					const accesstype = this.getNodeParameter('accesstype', itemIndex, '') as string;
+					let endpoint = '';
 					
-					const endpoint = `${resource}/${id}`;
+					if(accesstype == 'admin'){
+						let endpoint = `admin/${resource}/${id}/metadata`;
+					}
+					else if(accesstype == 'extension'){
+						let endpoint = `admin/extension/${resource}/${id}/metadata`;
+					}
+					else if(accesstype == 'user'){
+						let endpoint = `${resource}/${id}/metadata`;
+					}
 					
 					item = items[itemIndex];
 					const newItem: INodeExecutionData = {
 						json: {},
 						binary: {},
 					};
-					newItem.json = await vCloudDirectorApiRequest.call(this,'Get', endpoint, {}, {},token);
+					newItem.json = await vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
 					returnItems.push(newItem);
 				}
 

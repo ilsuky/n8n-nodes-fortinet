@@ -253,28 +253,42 @@ class vCloudDirector {
             try {
                 if (operation == 'get') {
                     const id = this.getNodeParameter('id', itemIndex, '');
-                    let resource = '';
-                    let endpoint = '';
                     if (accesstype == 'admin') {
                         const resource = this.getNodeParameter('resource_admin', 0, '');
                         const endpoint = 'admin/' + resource + '/' + id + '/metadata';
+                        console.log(endpoint);
+                        item = items[itemIndex];
+                        const newItem = {
+                            json: {},
+                            binary: {},
+                        };
+                        newItem.json = await GenericFunctions_1.vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+                        returnItems.push(newItem);
                     }
                     else if (accesstype == 'extension') {
                         const resource = this.getNodeParameter('resource_extension', 0, '');
                         const endpoint = 'admin/extension/' + resource + '/' + id + '/metadata';
+                        console.log(endpoint);
+                        item = items[itemIndex];
+                        const newItem = {
+                            json: {},
+                            binary: {},
+                        };
+                        newItem.json = await GenericFunctions_1.vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+                        returnItems.push(newItem);
                     }
                     else if (accesstype == 'user') {
                         const resource = this.getNodeParameter('resource_user', 0, '');
                         const endpoint = resource + '/' + id + '/metadata';
+                        console.log(endpoint);
+                        item = items[itemIndex];
+                        const newItem = {
+                            json: {},
+                            binary: {},
+                        };
+                        newItem.json = await GenericFunctions_1.vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+                        returnItems.push(newItem);
                     }
-                    console.log(endpoint);
-                    item = items[itemIndex];
-                    const newItem = {
-                        json: {},
-                        binary: {},
-                    };
-                    newItem.json = await GenericFunctions_1.vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
-                    returnItems.push(newItem);
                 }
                 if (operation == 'update') {
                     const id = this.getNodeParameter('id', itemIndex, '');

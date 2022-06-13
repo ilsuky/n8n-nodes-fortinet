@@ -261,32 +261,53 @@ export class vCloudDirector implements INodeType {
 				//--------------------------------------------------------
 				if(operation == 'get'){
 					const id = this.getNodeParameter('id', itemIndex, '') as string;
-					let resource = '';
-					let endpoint = '';
 					
 					if(accesstype == 'admin'){
 						const resource = this.getNodeParameter('resource_admin', 0, '') as string;
 						const endpoint = 'admin/' + resource + '/' + id + '/metadata';
-					}
-					else if(accesstype == 'extension'){
+						
+						console.log(endpoint);
+					
+						item = items[itemIndex];
+						const newItem: INodeExecutionData = {
+							json: {},
+							binary: {},
+						};
+						
+						newItem.json = await vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+						returnItems.push(newItem);
+						
+					} else if(accesstype == 'extension'){
 						const resource = this.getNodeParameter('resource_extension', 0, '') as string;
 						const endpoint = 'admin/extension/' + resource + '/' + id +'/metadata';
-					}
-					else if(accesstype == 'user'){
+						
+						console.log(endpoint);
+					
+						item = items[itemIndex];
+						const newItem: INodeExecutionData = {
+							json: {},
+							binary: {},
+						};
+						
+						newItem.json = await vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+						returnItems.push(newItem);
+						
+					} else if(accesstype == 'user'){
 						const resource = this.getNodeParameter('resource_user', 0, '') as string;
 						const endpoint = resource + '/' + id + '/metadata';
+						
+						console.log(endpoint);
+					
+						item = items[itemIndex];
+						const newItem: INodeExecutionData = {
+							json: {},
+							binary: {},
+						};
+						
+						newItem.json = await vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+						returnItems.push(newItem);
+						
 					}
-					
-					console.log(endpoint);
-					
-					item = items[itemIndex];
-					const newItem: INodeExecutionData = {
-						json: {},
-						binary: {},
-					};
-					
-					newItem.json = await vCloudDirectorApiRequest.call(this, 'Get', endpoint, {}, {}, token);
-					returnItems.push(newItem);
 				}
 
 

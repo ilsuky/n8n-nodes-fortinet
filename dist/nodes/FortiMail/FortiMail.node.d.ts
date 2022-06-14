@@ -1,6 +1,6 @@
 import { IExecuteFunctions } from 'n8n-core';
 import { INodeExecutionData, INodeType, INodeTypeDescription } from 'n8n-workflow';
-export declare class vCloudDirector implements INodeType {
+export declare class FortiMail implements INodeType {
     description: INodeTypeDescription;
     execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]>;
 }

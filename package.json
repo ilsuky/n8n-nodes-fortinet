@@ -1,13 +1,13 @@
 {
-  "name": "n8n-nodes-vcloud",
-  "version": "0.1.2",
-  "description": "vCloud Director Client - custom n8n node.",
+  "name": "n8n-nodes-fortinet",
+  "version": "0.1.0",
+  "description": "Fortinet - custom n8n node.",
   "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://n8n.io",
   "author": "Christian Vojak",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n8n-io/n8n-nodes-starter.git"
+    "url": "git+https://github.com/ilsuky/n8n-nodes-fortinet.git"
   },
   "main": "index.js",
   "scripts": {
@@ -26,10 +26,10 @@
   ],
   "n8n": {
     "credentials": [
-      "dist/credentials/vCloudDirector.credentials.js"
+      "dist/credentials/FortiMail.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/vCloudDirector/vCloudDirector.node.js"
+      "dist/nodes/FortiMail/vCloudDirector.node.js"
     ]
   },
   "devDependencies": {

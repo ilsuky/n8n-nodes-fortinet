@@ -1,7 +1,7 @@
-# n8n-nodes-vcloud
+# n8n-nodes-fortinet
 
-**VMware vCloud Director**
-
+**FortiMail 6.4.0**
+[REST API Reference](http://docs.fortinet.com/document/fortimail/6.4.0/rest-api-reference/768217/introduction)
 
 
 ## License

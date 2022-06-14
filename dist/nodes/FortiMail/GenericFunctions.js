@@ -1,18 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getxToken = exports.vCloudDirectorApiRequest = void 0;
+exports.getxToken = exports.FortiMailApiRequest = void 0;
 const n8n_workflow_1 = require("n8n-workflow");
-async function vCloudDirectorApiRequest(method, endpoint, body = {}, qs = {}, Token) {
-    const credentials = await this.getCredentials('vCloudDirector');
+async function FortiMailApiRequest(method, endpoint, body = {}, qs = {}, Token) {
+    const credentials = await this.getCredentials('FortiMail');
     const options = {
         headers: {
-            'Authorization': 'Bearer ' + Token,
-            'Accept': 'application/*+json;version=35.0',
+            'Cookie': Token,
         },
         method,
         body,
         qs,
-        uri: `${credentials.host}/api/${endpoint}`,
+        uri: `${credentials.host}/api/v1/${endpoint}`,
         json: true,
         gzip: true,
         rejectUnauthorized: false,
@@ -32,25 +31,22 @@ async function vCloudDirectorApiRequest(method, endpoint, body = {}, qs = {}, To
         throw new n8n_workflow_1.NodeApiError(this.getNode(), { error: error });
     }
 }
-exports.vCloudDirectorApiRequest = vCloudDirectorApiRequest;
+exports.FortiMailApiRequest = FortiMailApiRequest;
 async function getxToken({ username, password, host }) {
     const credentials = await this.getCredentials('vCloudDirector');
     const options = {
         headers: {
-            'Accept': 'application/*+json;version=35.0'
+            'Content-Type': 'application/json'
         },
         method: 'POST',
-        uri: `${credentials.host}/api/sessions`,
+        uri: `${credentials.host}/api/v1/AdminLogin`,
         json: true,
-        auth: {
-            username: `${credentials.username}`,
-            password: `${credentials.password}`
-        },
+        body: '{"name":"' + credentials.username + '","password":"' + credentials.password + '"}',
         resolveWithFullResponse: true,
     };
     try {
         const cookie = await this.helpers.request(options);
-        const cookieheader = cookie.headers['x-vmware-vcloud-access-token'];
+        const cookieheader = cookie.headers['set-cookie'];
         return cookieheader;
     }
     catch (error) {

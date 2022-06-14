@@ -1,4 +1,4 @@
-export type vCloudDirectorCredentials = {
+export type FortiMailCredentials = {
 	username: string;
 	password: string;
 	host: string;

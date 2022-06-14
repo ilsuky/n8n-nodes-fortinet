@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.vCloudDirector = void 0;
-class vCloudDirector {
+exports.FortiMail = void 0;
+class FortiMail {
     constructor() {
-        this.name = 'vCloudDirector';
-        this.displayName = 'VMware vCloud Director';
+        this.name = 'FortiMail';
+        this.displayName = 'Fortinet FortiMail';
         this.properties = [
             {
                 displayName: 'Host',
@@ -27,5 +27,5 @@ class vCloudDirector {
         ];
     }
 }
-exports.vCloudDirector = vCloudDirector;
-//# sourceMappingURL=vCloudDirector.credentials.js.map
+exports.FortiMail = FortiMail;
+//# sourceMappingURL=FortiMail.credentials.js.map

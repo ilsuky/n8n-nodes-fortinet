@@ -1,9 +1,9 @@
 import { ICredentialType, NodePropertyTypes, INodeProperties } from 'n8n-workflow';
 
-export class vCloudDirector implements ICredentialType {
-	name = 'vCloudDirector';
+export class FortiMail implements ICredentialType {
+	name = 'FortiMail';
 
-	displayName = 'VMware vCloud Director';
+	displayName = 'Fortinet FortiMail';
 
 	properties: INodeProperties[] = [
 		{

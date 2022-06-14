@@ -14,10 +14,10 @@ import {
 } from 'n8n-workflow';
 
 import {
-	vCloudDirectorCredentials,
+	FortiMailCredentials,
 } from './types';
 
-export async function vCloudDirectorApiRequest(
+export async function FortiMailApiRequest(
 	this: IExecuteFunctions | ILoadOptionsFunctions,
 	method: string,
 	endpoint: string,
@@ -25,17 +25,16 @@ export async function vCloudDirectorApiRequest(
 	qs: IDataObject = {},
 	Token: string
 ) {
-	const credentials = await this.getCredentials('vCloudDirector') as vCloudDirectorCredentials;
+	const credentials = await this.getCredentials('FortiMail') as FortiMailCredentials;
 	
 	const options: OptionsWithUri = {
 		headers: {
-			'Authorization': 'Bearer ' + Token,
-			'Accept': 'application/*+json;version=35.0',
+			'Cookie': Token,
 		},
 		method,
 		body,
 		qs,
-		uri: `${credentials.host}/api/${endpoint}`,
+		uri: `${credentials.host}/api/v1/${endpoint}`,
 		json: true,
 		gzip: true,
 		rejectUnauthorized: false,
@@ -63,28 +62,25 @@ export async function vCloudDirectorApiRequest(
  */
  export async function getxToken(
 	this: IExecuteFunctions | ILoadOptionsFunctions,
-	{ username, password, host }: vCloudDirectorCredentials,
+	{ username, password, host }: FortiMailCredentials,
 ) {
 
-	const credentials = await this.getCredentials('vCloudDirector') as vCloudDirectorCredentials;
+	const credentials = await this.getCredentials('vCloudDirector') as FortiMailCredentials;
 	const options: OptionsWithUri = {
 		headers: {
-			'Accept': 'application/*+json;version=35.0'
+			'Content-Type': 'application/json'
 		},
 		method: 'POST',
-		uri: `${credentials.host}/api/sessions`,
+		uri: `${credentials.host}/api/v1/AdminLogin`,
 		json: true,
-		auth: {
-			username: `${credentials.username}`,
-			password: `${credentials.password}`
-		},
+		body: '{"name":"' + credentials.username + '","password":"' + credentials.password +'"}',
 		//@ts-ignore
 		resolveWithFullResponse: true,		
 	};
 	
 	try {
 		const cookie = await this.helpers.request!(options);
-		const cookieheader = cookie.headers['x-vmware-vcloud-access-token'];
+		const cookieheader = cookie.headers['set-cookie'];
 		return cookieheader;
 	} catch (error:any) {
 		throw new NodeApiError(this.getNode(), {error:error});

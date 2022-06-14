@@ -29,7 +29,7 @@
       "dist/credentials/FortiMail.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/FortiMail/vCloudDirector.node.js"
+      "dist/nodes/FortiMail/FortiMail.node.js"
     ]
   },
   "devDependencies": {

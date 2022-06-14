@@ -38,7 +38,6 @@ export async function FortiMailApiRequest(
 		json: true,
 		gzip: true,
 		//@ts-ignore
-		skipSslCertificateValidation: true,
 		rejectUnauthorized: false,
 	};
 
@@ -78,7 +77,7 @@ export async function FortiMailApiRequest(
 		body: '{"name":"' + credentials.username + '","password":"' + credentials.password +'"}',
 		//@ts-ignore
 		resolveWithFullResponse: true,
-		skipSslCertificateValidation: true,		
+		rejectUnauthorized: false,		
 	};
 	
 	try {

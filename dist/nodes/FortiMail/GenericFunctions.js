@@ -14,7 +14,6 @@ async function FortiMailApiRequest(method, endpoint, body = {}, qs = {}, Token) 
         uri: `${credentials.host}/api/v1/${endpoint}`,
         json: true,
         gzip: true,
-        skipSslCertificateValidation: true,
         rejectUnauthorized: false,
     };
     if (Object.keys(qs).length === 0) {
@@ -44,7 +43,7 @@ async function getxToken({ username, password, host }) {
         json: true,
         body: '{"name":"' + credentials.username + '","password":"' + credentials.password + '"}',
         resolveWithFullResponse: true,
-        skipSslCertificateValidation: true,
+        rejectUnauthorized: false,
     };
     try {
         const cookie = await this.helpers.request(options);

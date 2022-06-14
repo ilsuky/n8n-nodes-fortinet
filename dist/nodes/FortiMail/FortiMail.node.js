@@ -116,7 +116,7 @@ class FortiMail {
                     const endpoint = '' + resource + '/' + id + '';
                     console.log(endpoint);
                     if (split) {
-                        const data = JSON.parse(await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token)).data;
+                        const data = JSON.parse(await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token));
                         for (let dataIndex = 0; dataIndex < data.collection.length; dataIndex++) {
                             const newItem = {
                                 json: {},

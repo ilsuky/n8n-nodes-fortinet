@@ -64,12 +64,12 @@ class FortiMail {
                             description: 'Domain Operation',
                         },
                     ],
-                    default: 'org',
+                    default: 'domain',
                     description: 'Resource to use',
                 },
                 {
-                    displayName: 'Id',
-                    name: 'id',
+                    displayName: 'FQDN name of the domain to query',
+                    name: 'domain_name',
                     type: 'string',
                     displayOptions: {
                         show: {
@@ -81,7 +81,7 @@ class FortiMail {
                         },
                     },
                     default: '',
-                    description: 'Id of Resource',
+                    description: 'domain level resources',
                 },
             ],
         };
@@ -96,7 +96,7 @@ class FortiMail {
         const token = await GenericFunctions_1.getxToken.call(this, credentials);
         for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
             try {
-                const id = this.getNodeParameter('id', itemIndex, '');
+                const id = this.getNodeParameter('domain_name', itemIndex, '');
                 if (operation == 'get') {
                     const endpoint = '' + resource + '/' + id + '';
                     console.log(endpoint);

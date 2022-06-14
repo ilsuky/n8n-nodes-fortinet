@@ -66,12 +66,12 @@ export class FortiMail implements INodeType {
 						description: 'Domain Operation',
 					},						
 				],
-				default: 'org',
+				default: 'domain',
 				description: 'Resource to use',		
 			},				
 			{
-				displayName: 'Id',
-				name: 'id',
+				displayName: 'FQDN name of the domain to query',
+				name: 'domain_name',
 				type: 'string',
 				displayOptions: {
 					show: {
@@ -83,7 +83,7 @@ export class FortiMail implements INodeType {
 					},
 				},
 				default: '',
-				description: 'Id of Resource',
+				description: 'domain level resources',
 			},
 		],
 	};
@@ -105,7 +105,7 @@ export class FortiMail implements INodeType {
 
 			try{
 				
-				const id = this.getNodeParameter('id', itemIndex, '') as string;
+				const id = this.getNodeParameter('domain_name', itemIndex, '') as string;
 				
 				//--------------------------------------------------------
 				// 						Get

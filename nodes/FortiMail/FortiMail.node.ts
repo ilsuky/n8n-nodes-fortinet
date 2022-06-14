@@ -85,6 +85,20 @@ export class FortiMail implements INodeType {
 				default: '',
 				description: 'domain level resources',
 			},
+			{
+				displayName: 'Retrieve and Split Data Items',
+				name: 'split',
+				type: 'boolean',
+				displayOptions: {
+					show: {
+						operation:[
+							'get',
+						],
+					},
+				},
+				default: true,
+				description: 'Retrieve and Split Data array into seperate Items',
+			},			
 		],
 	};
 
@@ -111,19 +125,36 @@ export class FortiMail implements INodeType {
 				// 						Get
 				//--------------------------------------------------------
 				if(operation == 'get'){
+					const split = this.getNodeParameter('split', itemIndex, '') as boolean;
 					
 					const endpoint = '' + resource + '/' + id + '';
 					
 					console.log(endpoint);
 				
-					item = items[itemIndex];
-					const newItem: INodeExecutionData = {
-						json: {},
-						binary: {},
-					};
-					
-					newItem.json = await FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token);
-					returnItems.push(newItem);
+					if(split){
+						
+						const data = JSON.parse(await FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token)).collection;
+						for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
+							const newItem: INodeExecutionData = {
+								json: {},
+								binary: {},
+							};
+							newItem.json = data[dataIndex];
+	
+							returnItems.push(newItem);
+						}		
+						
+					} else {
+						
+						item = items[itemIndex];
+						const newItem: INodeExecutionData = {
+							json: {},
+							binary: {},
+						};
+						
+						newItem.json = await FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+						returnItems.push(newItem);
+					}
 						
 				}
 

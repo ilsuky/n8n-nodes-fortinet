@@ -83,6 +83,20 @@ class FortiMail {
                     default: '',
                     description: 'domain level resources',
                 },
+                {
+                    displayName: 'Retrieve and Split Data Items',
+                    name: 'split',
+                    type: 'boolean',
+                    displayOptions: {
+                        show: {
+                            operation: [
+                                'get',
+                            ],
+                        },
+                    },
+                    default: true,
+                    description: 'Retrieve and Split Data array into seperate Items',
+                },
             ],
         };
     }
@@ -98,15 +112,29 @@ class FortiMail {
             try {
                 const id = this.getNodeParameter('domain_name', itemIndex, '');
                 if (operation == 'get') {
+                    const split = this.getNodeParameter('split', itemIndex, '');
                     const endpoint = '' + resource + '/' + id + '';
                     console.log(endpoint);
-                    item = items[itemIndex];
-                    const newItem = {
-                        json: {},
-                        binary: {},
-                    };
-                    newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token);
-                    returnItems.push(newItem);
+                    if (split) {
+                        const data = JSON.parse(await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token)).collection;
+                        for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
+                            const newItem = {
+                                json: {},
+                                binary: {},
+                            };
+                            newItem.json = data[dataIndex];
+                            returnItems.push(newItem);
+                        }
+                    }
+                    else {
+                        item = items[itemIndex];
+                        const newItem = {
+                            json: {},
+                            binary: {},
+                        };
+                        newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+                        returnItems.push(newItem);
+                    }
                 }
                 if (operation == 'update') {
                     const endpoint = `${resource}/${id}`;

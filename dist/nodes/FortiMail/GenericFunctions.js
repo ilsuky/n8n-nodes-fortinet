@@ -33,7 +33,7 @@ async function FortiMailApiRequest(method, endpoint, body = {}, qs = {}, Token) 
 }
 exports.FortiMailApiRequest = FortiMailApiRequest;
 async function getxToken({ username, password, host }) {
-    const credentials = await this.getCredentials('vCloudDirector');
+    const credentials = await this.getCredentials('FortiMail');
     const options = {
         headers: {
             'Content-Type': 'application/json'

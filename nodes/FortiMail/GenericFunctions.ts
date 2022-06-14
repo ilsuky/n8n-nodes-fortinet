@@ -65,7 +65,7 @@ export async function FortiMailApiRequest(
 	{ username, password, host }: FortiMailCredentials,
 ) {
 
-	const credentials = await this.getCredentials('vCloudDirector') as FortiMailCredentials;
+	const credentials = await this.getCredentials('FortiMail') as FortiMailCredentials;
 	const options: OptionsWithUri = {
 		headers: {
 			'Content-Type': 'application/json'

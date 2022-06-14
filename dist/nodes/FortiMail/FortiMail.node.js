@@ -116,13 +116,13 @@ class FortiMail {
                     const endpoint = '' + resource + '/' + id + '';
                     console.log(endpoint);
                     if (split) {
-                        const data = JSON.parse(await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token)).collection;
-                        for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
+                        const data = JSON.parse(await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token)).data;
+                        for (let dataIndex = 0; dataIndex < data.collection.length; dataIndex++) {
                             const newItem = {
                                 json: {},
                                 binary: {},
                             };
-                            newItem.json = data[dataIndex];
+                            newItem.json = data.collection[dataIndex];
                             returnItems.push(newItem);
                         }
                     }

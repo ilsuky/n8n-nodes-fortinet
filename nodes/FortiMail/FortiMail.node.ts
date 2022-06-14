@@ -133,13 +133,13 @@ export class FortiMail implements INodeType {
 				
 					if(split){
 						
-						const data = JSON.parse(await FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token)).collection;
-						for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
+						const data = JSON.parse(await FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token)).data;
+						for (let dataIndex = 0; dataIndex < data.collection.length; dataIndex++) {
 							const newItem: INodeExecutionData = {
 								json: {},
 								binary: {},
 							};
-							newItem.json = data[dataIndex];
+							newItem.json = data.collection[dataIndex];
 	
 							returnItems.push(newItem);
 						}		

@@ -44,11 +44,11 @@ exports.domainFields = [
     SharedFields_1.makeSimpleField('domain', 'create'),
     {
         displayName: 'Domain',
-        name: 'email_addresses',
-        type: 'fixedCollection',
-        default: {},
-        placeholder: 'Add Email Address Field',
-        description: 'domain’s email addresses',
+        name: 'domain_name',
+        description: 'FQDN name of the domain',
+        type: 'string',
+        required: true,
+        default: '',
         displayOptions: {
             show: {
                 resource: [
@@ -59,61 +59,137 @@ exports.domainFields = [
                 ],
             },
         },
+    },
+    {
+        displayName: 'Relay type',
+        name: 'mxflag',
+        type: 'options',
+        default: 'subscribed',
+        description: 'Subscription status of this email address',
         options: [
             {
-                displayName: 'Email Addresses Fields',
-                name: 'email_addresses_fields',
-                values: [
-                    {
-                        displayName: 'Address',
-                        name: 'address',
-                        type: 'string',
-                        default: '',
-                        description: 'domain\'s email address',
-                    },
-                    {
-                        displayName: 'Primary',
-                        name: 'primary',
-                        type: 'hidden',
-                        default: true,
-                        description: 'Whether this is the domain\'s primary email address',
-                    },
-                    {
-                        displayName: 'Status',
-                        name: 'status',
-                        type: 'options',
-                        default: 'subscribed',
-                        description: 'Subscription status of this email address',
-                        options: [
-                            {
-                                name: 'Bouncing',
-                                value: 'bouncing',
-                            },
-                            {
-                                name: 'Previous Bounce',
-                                value: 'previous bounce',
-                            },
-                            {
-                                name: 'Previous Spam Complaint',
-                                value: 'previous spam complaint',
-                            },
-                            {
-                                name: 'Spam Complaint',
-                                value: 'spam complaint',
-                            },
-                            {
-                                name: 'Subscribed',
-                                value: 'subscribed',
-                            },
-                            {
-                                name: 'Unsubscribed',
-                                value: 'unsubscribed',
-                            },
-                        ],
-                    },
-                ],
+                name: 'MX Record(this domain)',
+                value: '1',
+            },
+            {
+                name: 'Host',
+                value: '0',
             },
         ],
+        displayOptions: {
+            show: {
+                resource: [
+                    'domain',
+                ],
+                operation: [
+                    'create',
+                ],
+            },
+        },
+    },
+    {
+        displayName: 'SMTP server',
+        name: 'ip',
+        description: '',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: [
+                    'domain',
+                ],
+                operation: [
+                    'create',
+                ],
+                mxflag: [
+                    '0',
+                ],
+            },
+        },
+    },
+    {
+        displayName: 'SMTP server Port',
+        name: 'port',
+        description: '',
+        type: 'string',
+        default: '25',
+        displayOptions: {
+            show: {
+                resource: [
+                    'domain',
+                ],
+                operation: [
+                    'create',
+                ],
+                mxflag: [
+                    '0',
+                ],
+            },
+        },
+    },
+    {
+        displayName: 'Recipient Address Verification',
+        name: 'recipient_verification',
+        type: 'options',
+        default: 'SMTP',
+        description: 'Subscription status of this email address',
+        options: [
+            {
+                name: 'SMTP',
+                value: 'SMTP',
+            },
+            {
+                name: 'Disable',
+                value: '--',
+            },
+        ],
+        displayOptions: {
+            show: {
+                resource: [
+                    'domain',
+                ],
+                operation: [
+                    'create',
+                ],
+            },
+        },
+    },
+    {
+        displayName: 'Is subdomain',
+        name: 'is_subdomain',
+        type: 'boolean',
+        default: false,
+        description: '',
+        displayOptions: {
+            show: {
+                resource: [
+                    'domain',
+                ],
+                operation: [
+                    'getAll',
+                ],
+            },
+        },
+    },
+    {
+        displayName: 'Main domain',
+        name: 'maindomain',
+        description: '',
+        type: 'string',
+        default: '',
+        displayOptions: {
+            show: {
+                resource: [
+                    'domain',
+                ],
+                operation: [
+                    'create',
+                ],
+                is_subdomain: [
+                    true,
+                ],
+            },
+        },
     },
     {
         displayName: 'Additional Fields',
@@ -152,24 +228,6 @@ exports.domainFields = [
         },
     },
     SharedFields_1.makeSimpleField('domain', 'get'),
-    {
-        displayName: 'Return All',
-        name: 'returnAll',
-        type: 'boolean',
-        default: false,
-        description: 'Whether to return all results or only up to a given limit',
-        displayOptions: {
-            show: {
-                resource: [
-                    'domain',
-                ],
-                operation: [
-                    'getAll',
-                ],
-            },
-        },
-    },
-    SharedFields_1.makeSimpleField('domain', 'getAll'),
     {
         displayName: 'domain ID',
         name: 'domainId',

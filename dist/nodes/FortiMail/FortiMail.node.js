@@ -122,6 +122,16 @@ class FortiMail {
                         newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Delete', endpoint, {}, {}, token);
                         returnItems.push(newItem);
                     }
+                    if (operation === 'getAll') {
+                        item = items[itemIndex];
+                        const newItem = {
+                            json: {},
+                            binary: {},
+                        };
+                        const endpoint = '' + resource + '/';
+                        newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token);
+                        returnItems.push(newItem);
+                    }
                 }
             }
             catch (error) {

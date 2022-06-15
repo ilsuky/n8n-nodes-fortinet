@@ -169,30 +169,6 @@ exports.domainFields = [
             },
         },
     },
-    {
-        displayName: 'Limit',
-        name: 'limit',
-        type: 'number',
-        default: 25,
-        description: 'Max number of results to return',
-        typeOptions: {
-            minValue: 1,
-            maxValue: 25,
-        },
-        displayOptions: {
-            show: {
-                resource: [
-                    'domain',
-                ],
-                operation: [
-                    'getAll',
-                ],
-                returnAll: [
-                    false,
-                ],
-            },
-        },
-    },
     SharedFields_1.makeSimpleField('domain', 'getAll'),
     {
         displayName: 'domain ID',

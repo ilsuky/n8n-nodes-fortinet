@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FortiMail = void 0;
+const descriptions_1 = require("./descriptions");
 const GenericFunctions_1 = require("./GenericFunctions");
 class FortiMail {
     constructor() {
@@ -25,35 +26,6 @@ class FortiMail {
             ],
             properties: [
                 {
-                    displayName: 'Operation',
-                    name: 'operation',
-                    type: 'options',
-                    options: [
-                        {
-                            name: 'Create',
-                            value: 'create',
-                            description: 'Create a record',
-                        },
-                        {
-                            name: 'Get',
-                            value: 'get',
-                            description: 'Retrieve a record',
-                        },
-                        {
-                            name: 'Update',
-                            value: 'update',
-                            description: 'Update a record',
-                        },
-                        {
-                            name: 'Delete',
-                            value: 'delete',
-                            description: 'Delete a record',
-                        },
-                    ],
-                    default: 'get',
-                    description: 'Operation to perform',
-                },
-                {
                     displayName: 'Resources',
                     name: 'resource',
                     type: 'options',
@@ -67,36 +39,8 @@ class FortiMail {
                     default: 'domain',
                     description: 'Resource to use',
                 },
-                {
-                    displayName: 'FQDN name of the domain to query',
-                    name: 'domain_name',
-                    type: 'string',
-                    displayOptions: {
-                        show: {
-                            operation: [
-                                'get',
-                                'delete',
-                                'update',
-                            ],
-                        },
-                    },
-                    default: '',
-                    description: 'domain level resources',
-                },
-                {
-                    displayName: 'Retrieve and Split Data Items',
-                    name: 'split',
-                    type: 'boolean',
-                    displayOptions: {
-                        show: {
-                            operation: [
-                                'get',
-                            ],
-                        },
-                    },
-                    default: true,
-                    description: 'Retrieve and Split Data array into seperate Items',
-                },
+                ...descriptions_1.domainOperations,
+                ...descriptions_1.domainFields,
             ],
         };
     }
@@ -110,23 +54,10 @@ class FortiMail {
         const token = await GenericFunctions_1.getxToken.call(this, credentials);
         for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
             try {
-                const id = this.getNodeParameter('domain_name', itemIndex, '');
-                if (operation == 'get') {
-                    const split = this.getNodeParameter('split', itemIndex, '');
-                    const endpoint = '' + resource + '/' + id + '';
-                    console.log(endpoint);
-                    if (split) {
-                        const data = JSON.parse(JSON.stringify(await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token)));
-                        for (let dataIndex = 0; dataIndex < data.collection.length; dataIndex++) {
-                            const newItem = {
-                                json: {},
-                                binary: {},
-                            };
-                            newItem.json = data.collection[dataIndex];
-                            returnItems.push(newItem);
-                        }
-                    }
-                    else {
+                if (resource === 'domain') {
+                    if (operation == 'get') {
+                        const domainId = this.getNodeParameter('domainId', itemIndex);
+                        const endpoint = '' + resource + '/' + domainId + '';
                         item = items[itemIndex];
                         const newItem = {
                             json: {},
@@ -135,60 +66,62 @@ class FortiMail {
                         newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Get', endpoint, {}, {}, token);
                         returnItems.push(newItem);
                     }
-                }
-                if (operation == 'update') {
-                    const endpoint = `${resource}/${id}`;
-                    const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []);
-                    item = items[itemIndex];
-                    const attributes = {};
-                    for (let attributesIndex = 0; attributesIndex < attributesInput.length; attributesIndex++) {
-                        attributes[`${attributesInput[attributesIndex].name}`] = attributesInput[attributesIndex].value;
+                    if (operation == 'update') {
+                        const domainId = this.getNodeParameter('domainId', itemIndex);
+                        const endpoint = `${resource}/${domainId}`;
+                        const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []);
+                        item = items[itemIndex];
+                        const attributes = {};
+                        for (let attributesIndex = 0; attributesIndex < attributesInput.length; attributesIndex++) {
+                            attributes[`${attributesInput[attributesIndex].name}`] = attributesInput[attributesIndex].value;
+                        }
+                        ;
+                        const toCreate = {};
+                        toCreate.data = {
+                            "type": resource,
+                            attributes
+                        };
+                        console.log(toCreate);
+                        const newItem = {
+                            json: {},
+                            binary: {},
+                        };
+                        newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Put', endpoint, toCreate, {}, token);
+                        returnItems.push(newItem);
                     }
-                    ;
-                    const toCreate = {};
-                    toCreate.data = {
-                        "type": resource,
-                        attributes
-                    };
-                    console.log(toCreate);
-                    const newItem = {
-                        json: {},
-                        binary: {},
-                    };
-                    newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Put', endpoint, toCreate, {}, token);
-                    returnItems.push(newItem);
-                }
-                if (operation == 'create') {
-                    const endpoint = resource;
-                    const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []);
-                    item = items[itemIndex];
-                    const attributes = {};
-                    for (let attributesIndex = 0; attributesIndex < attributesInput.length; attributesIndex++) {
-                        attributes[`${attributesInput[attributesIndex].name}`] = attributesInput[attributesIndex].value;
+                    if (operation == 'create') {
+                        const endpoint = resource;
+                        const attributesInput = this.getNodeParameter('values.attributes', itemIndex, []);
+                        item = items[itemIndex];
+                        const attributes = {};
+                        for (let attributesIndex = 0; attributesIndex < attributesInput.length; attributesIndex++) {
+                            attributes[`${attributesInput[attributesIndex].name}`] = attributesInput[attributesIndex].value;
+                        }
+                        ;
+                        const toCreate = {};
+                        toCreate.data = {
+                            "type": resource,
+                            attributes
+                        };
+                        console.log(toCreate);
+                        const newItem = {
+                            json: {},
+                            binary: {},
+                        };
+                        newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Post', endpoint, toCreate, {}, token);
+                        returnItems.push(newItem);
                     }
-                    ;
-                    const toCreate = {};
-                    toCreate.data = {
-                        "type": resource,
-                        attributes
-                    };
-                    console.log(toCreate);
-                    const newItem = {
-                        json: {},
-                        binary: {},
-                    };
-                    newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Post', endpoint, toCreate, {}, token);
-                    returnItems.push(newItem);
-                }
-                if (operation == 'delete') {
-                    const endpoint = `${resource}/${id}`;
-                    item = items[itemIndex];
-                    const newItem = {
-                        json: {},
-                        binary: {},
-                    };
-                    newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Delete', endpoint, {}, {}, token);
-                    returnItems.push(newItem);
+                    if (operation == 'delete') {
+                        const domainId = this.getNodeParameter('domainId', itemIndex);
+                        const endpoint = `${resource}/${domainId}`;
+                        item = items[itemIndex];
+                        const newItem = {
+                            json: {},
+                            binary: {},
+                        };
+                        newItem.json = await GenericFunctions_1.FortiMailApiRequest.call(this, 'Delete', endpoint, {}, {}, token);
+                        returnItems.push(newItem);
+                    }
                 }
             }
             catch (error) {

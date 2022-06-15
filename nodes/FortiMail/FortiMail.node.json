@@ -1,0 +1,21 @@
+{
+	"node": "n8n-nodes-base.FortiMail",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": [
+		"Miscellaneous",
+		"Utility"
+	],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.fortinet.com/document/fortimail/6.4.0/rest-api-reference/770079/password-based-authentication"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.fortinet.com/document/fortimail/6.4.0/rest-api-reference/768217/introduction"
+			}
+		]
+	}
+}

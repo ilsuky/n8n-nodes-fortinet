@@ -38,4 +38,5 @@ export type FieldsUiValues = Array<{
 	fieldValue: string;
 }>;
 
-export type Operation = 'create' | 'delete' | 'update' | 'get';
+export type Resource = 'domain';
+export type Operation = 'create' | 'delete' | 'update' | 'get' | 'getAll';

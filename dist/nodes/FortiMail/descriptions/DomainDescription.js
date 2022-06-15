@@ -64,7 +64,7 @@ exports.domainFields = [
         displayName: 'Relay type',
         name: 'mxflag',
         type: 'options',
-        default: 'subscribed',
+        default: '0',
         description: 'Subscription status of this email address',
         options: [
             {
@@ -166,7 +166,7 @@ exports.domainFields = [
                     'domain',
                 ],
                 operation: [
-                    'getAll',
+                    'create',
                 ],
             },
         },

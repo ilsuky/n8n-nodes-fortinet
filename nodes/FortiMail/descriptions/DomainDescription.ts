@@ -73,7 +73,7 @@ export const domainFields: INodeProperties[] = [
 		displayName: 'Relay type',
 		name: 'mxflag',
 		type: 'options',
-		default: 'subscribed',
+		default: '0',
 		description: 'Subscription status of this email address',
 		options: [
 			{
@@ -175,7 +175,7 @@ export const domainFields: INodeProperties[] = [
 					'domain',
 				],
 				operation: [
-					'getAll',
+					'create',
 				],
 			},
 		},
